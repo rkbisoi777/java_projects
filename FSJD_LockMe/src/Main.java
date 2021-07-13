@@ -54,6 +54,7 @@ public class Main {
 				System.exit(1);
 			default :
 				System.out.println("Please select correct option");
+				System.out.println("                                         ");
 				signInOptions();
 				break;
 		}
@@ -73,6 +74,7 @@ public class Main {
 				System.exit(1);
 			default :
 				System.out.println("Please select correct option");
+				System.out.println("                                         ");
 				signInOptions(true);
 				break;
 		}
@@ -85,7 +87,7 @@ public class Main {
 		System.out.println("==========================================");
 		while(true) {
 			System.out.println("Enter Username :");
-			String username = scanner.next();
+			String username = scanner.next().toLowerCase();
 			File dir = new File(username);
 			boolean isAvail = dir.isDirectory();
 			if(isAvail==false) {
@@ -95,10 +97,12 @@ public class Main {
 				f = new File(username);
 				f.mkdir();
 				System.out.println("User Registration Suscessful !");
+				System.out.println("                                         ");
 				signInOptions(true);
 				break;
 			}else {
 				System.out.println("User Already Exist! Please Try With Other UserName");
+				System.out.println("                                         ");
 				continue;
 			}
 
@@ -112,17 +116,19 @@ public class Main {
 		System.out.println("==========================================");
 		while(true) {
 			System.out.println("Enter Username :");
-			String username = scanner.next();
+			String username = scanner.next().toLowerCase();
 			System.out.println("Enter Password");
 			String password = scanner.next();
 			
 			boolean isAvail = isAvailable(username,password);
 			if(isAvail == true) {
 			       System.out.println("Login Successful !");
+			       System.out.println("                                         ");
 			       lockerOptions(username);
 				   break;
 			} else if(isAvail == false){
 				System.out.println("Wrong Credentials! Try again.");
+				System.out.println("                                         ");
 				continue;
 			}
 		}
@@ -287,6 +293,7 @@ public class Main {
 	    }
 	    if (notFound = true) {
 	    	System.out.println("File Not Found Try Again.");
+	    	System.out.println("                                         ");
 	    	searchFiles(username,files);
 	    }
 	    int input = scanner.nextInt();
@@ -305,6 +312,7 @@ public class Main {
 				boolean isDeleted = file.delete();
 	    		if (isDeleted = true) {
 	    			System.out.println("Deleted");
+	    			System.out.println("                                         ");
 	    		}
 	    		int input = showFileEditOptions();
 	    		processOption(input,file,username);
@@ -316,6 +324,7 @@ public class Main {
 	    }
 	    if (notFound = true) {
 	    	System.out.println("File Not Found Try Again.");
+	    	System.out.println("                                         ");
 	    	deleteFile(username,files);
 	    }
 	    
@@ -380,9 +389,17 @@ public class Main {
 	
 	public static void writeIntoFiles(File file, String username) throws ClassNotFoundException {
 		//Writing into file
+		System.out.println("1. Replace");
+		System.out.println("2. Append");
+		int userInput = scanner.nextInt();
 		writer = null; 
 		try {
-			FileWriter fw = new FileWriter(file, true);
+			FileWriter fw = null;
+			if(userInput == 1) {
+				fw = new FileWriter(file);
+			} else {
+				fw = new FileWriter(file, true);
+			}
 			writer = new PrintWriter(new BufferedWriter(fw));
 			System.out.println("Write something into file : "+file.getName());
 			//System.out.println("File Name : "+file.getName());
@@ -391,6 +408,7 @@ public class Main {
 			writer.println(data);
 			writer.flush();
 			System.out.println("You have successfully written into a file");
+			System.out.println("                                         ");
 			int processInput = showFileEditOptions();
 	        processOptionSearch(processInput,file,username);
 		} catch(IOException e) {
@@ -413,7 +431,7 @@ public class Main {
 		} else if(input == 2) {
 			writeIntoFiles(file,username);
 		} else if(input == 3) {
-			lockerOptions(username);
+			lockerOptions(username.toLowerCase());
 		} else {
 			System.out.println("Application closed");
 			System.exit(1);
@@ -426,7 +444,7 @@ public class Main {
 		} else if(input == 2) {
 			writeIntoFiles(file,username);
 		} else if(input == 3) {
-			File dir = new File(username);
+			File dir = new File(username.toLowerCase());
 			int inputfiles = showFiles(dir.listFiles());
 	        File filepage = selectedFile(inputfiles, dir.listFiles());
 	        if(filepage == null) {
