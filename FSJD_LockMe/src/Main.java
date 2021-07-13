@@ -54,6 +54,7 @@ public class Main {
 				System.exit(1);
 			default :
 				System.out.println("Please select correct option");
+				signInOptions();
 				break;
 		}
 		//scanner.close();
@@ -72,6 +73,7 @@ public class Main {
 				System.exit(1);
 			default :
 				System.out.println("Please select correct option");
+				signInOptions(true);
 				break;
 		}
 		//scanner.close()
@@ -157,13 +159,13 @@ public class Main {
 					processOption(fileInput, f,username);
 					break;
 				case 3:
-					System.out.println("Enter name of the file:");
-					String file_name = scanner.next();
-					searchFiles(username,file_name,dir.listFiles());
+					//System.out.println("Enter name of the file:");
+					//String file_name = scanner.next();
+					searchFiles(username,dir.listFiles());
 				case 4:
-					System.out.println("Enter name of the file:");
-					String file_name1 = scanner.next();
-					deleteFile(username,file_name1,dir.listFiles());
+					//System.out.println("Enter name of the file:");
+					//String file_name1 = scanner.next();
+					deleteFile(username,dir.listFiles());
 				case 5:
 					signInOptions();
 				case 6:
@@ -171,6 +173,7 @@ public class Main {
 					System.exit(1);
 				default :
 					System.out.println("Please select from the following options");
+					lockerOptions(username);
 					break;
 			}
 		}
@@ -219,7 +222,7 @@ public class Main {
 	          String userdata = "";
 	          userdata = str;
 	          if((userdata.contains(username)) && userdata.contains(password)) {
-	        	  System.out.println("Found User Data");
+	        	  //System.out.println("Found User Data");
 	        	  found = true;
 	        	  break;
 	          } else {
@@ -266,20 +269,35 @@ public class Main {
 			
 	}
 		
-	public static int searchFiles(String username,String file_name,File[] files) throws IOException, ClassNotFoundException {
+	public static int searchFiles(String username,File[] files) throws IOException, ClassNotFoundException {
+		System.out.println("Enter name of the file:");
+		String file_name = scanner.next();
+		@SuppressWarnings("unused")
+		boolean notFound = false;
 	    for (File file : files) {
 	    	if ((file.getName()).equals(file_name)) {
 	    		System.out.println("File Found !!");
 	    		File foundfile = file.getCanonicalFile();
 	    		int input = showFileEditOptions();
 	    		processOption(input,foundfile,username);
+	    	} else {
+	    		notFound = true;
+	    		continue;
 	    	}
+	    }
+	    if (notFound = true) {
+	    	System.out.println("File Not Found Try Again.");
+	    	searchFiles(username,files);
 	    }
 	    int input = scanner.nextInt();
 	    return input;
 	}
 	
-	public static void deleteFile(String username,String file_name,File[] files) throws IOException, ClassNotFoundException {
+	public static void deleteFile(String username,File[] files) throws IOException, ClassNotFoundException {
+		System.out.println("Enter name of the file:");
+		String file_name = scanner.next();
+		@SuppressWarnings("unused")
+		boolean notFound = false;
 	    for (File file : files) {
 	    	if (file.getName().equals(file_name)) {
 	    		System.out.println("file found!");
@@ -292,10 +310,13 @@ public class Main {
 	    		processOption(input,file,username);
 	    		break;
 	    	} else {
-	    		System.out.println("File not found!");
-	    		lockerOptions(username);
+	    		notFound = true;
+	    		continue;
 	    	}
-    		
+	    }
+	    if (notFound = true) {
+	    	System.out.println("File Not Found Try Again.");
+	    	deleteFile(username,files);
 	    }
 	    
 	}
@@ -336,10 +357,14 @@ public class Main {
 	public static void readFile(File file,String username) throws ClassNotFoundException {
 		FileReader fr = null;
 		try {
+			System.out.println("=====================================================");
+			System.out.println("                                                     ");
 			fr = new FileReader(file);
 			int i;    
 			while((i=fr.read())!=-1)    
 			System.out.print((char)i);    
+			System.out.println("                                                     ");
+			System.out.println("=====================================================");
 		} catch(IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -358,11 +383,13 @@ public class Main {
 		writer = null; 
 		try {
 			FileWriter fw = new FileWriter(file, true);
-			writer = new PrintWriter(fw);
-			System.out.println("Write something to your file below :");
+			writer = new PrintWriter(new BufferedWriter(fw));
+			System.out.println("Write something into file : "+file.getName());
+			//System.out.println("File Name : "+file.getName());
 			scanner.nextLine();
 			String data = scanner.nextLine();
 			writer.println(data);
+			writer.flush();
 			System.out.println("You have successfully written into a file");
 			int processInput = showFileEditOptions();
 	        processOptionSearch(processInput,file,username);
@@ -371,8 +398,9 @@ public class Main {
 		}finally {
 			if(keyboard!=null)
 				 keyboard.close();
+			writer.close();
 		}
-		writer.close();
+		//writer.close();
 		
 	}
 	
@@ -380,6 +408,7 @@ public class Main {
 	
 	public static void processOption(int input, File file, String username) throws IOException, ClassNotFoundException {
 		if (input == 1) {
+			System.out.println("File : "+file.getName());
 			readFile(file,username);
 		} else if(input == 2) {
 			writeIntoFiles(file,username);
